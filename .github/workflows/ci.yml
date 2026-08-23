@@ -28,6 +28,12 @@ jobs:
         ports:
           - 27017:27017
 
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -40,6 +46,15 @@ jobs:
           cache: 'maven'
 
       - name: Build & Run Unit Tests
+        env:
+          SPRING_PROFILES_ACTIVE: test
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/payguard_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+          SPRING_DATASOURCE_USERNAME: Sakthi
+          SPRING_DATASOURCE_PASSWORD: Sakthi@13809
+          SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/payguard_audit
+          SPRING_REDIS_HOST: localhost
+          SPRING_REDIS_PORT: 6379
+          JWT_SECRET: b02ddeaea50c24239d0a70533562bb538485cd421ff797048461a8aef897b47af51a0b2ae44ccda1dd12801ddf4769f55642b52f1346fba5e0525e5595768d23
         run: |
           cd PayGuard
           chmod +x mvnw
