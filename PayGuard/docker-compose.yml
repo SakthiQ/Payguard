@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: PayGuard-mysql
+    environment:
+      MYSQL_DATABASE: payguard_db
+      MYSQL_USER: Sakthi
+      MYSQL_PASSWORD: Sakthi@13809
+      MYSQL_ROOT_PASSWORD: root_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  mongodb:
+    image: mongo:7.0
+    container_name: PayGuard-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: payguard_audit
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: PayGuard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  mongo_data:
+  redis_data:

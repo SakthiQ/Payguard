@@ -1,0 +1,76 @@
+name: PayGuard CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-ci:
+    name: Backend Build & Unit Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: payguard_db
+          MYSQL_USER: Sakthi
+          MYSQL_PASSWORD: Sakthi@13809
+          MYSQL_ROOT_PASSWORD: root_secret
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build & Run Unit Tests
+        run: |
+          cd PayGuard
+          chmod +x mvnw
+          ./mvnw clean test
+
+      - name: Package Fat JAR
+        run: |
+          cd PayGuard
+          ./mvnw package -DskipTests
+
+  frontend-ci:
+    name: Frontend Build & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: payguard-frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: |
+          cd payguard-frontend
+          npm ci
+
+      - name: Type Check & Production Build
+        run: |
+          cd payguard-frontend
+          npm run build
