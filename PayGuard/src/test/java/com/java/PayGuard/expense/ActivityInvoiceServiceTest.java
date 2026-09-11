@@ -121,7 +121,7 @@ class ActivityInvoiceServiceTest {
 
         // Margin: 2200/3000 * 100 = 73.33%
         assertEquals(0, new BigDecimal("73.33").compareTo(response.getProfitMarginPercent()));
-        verify(eventPublisher, times(1)).publishEvent(any());
+        verify(eventPublisher, times(1)).publishEvent(any(Object.class));
     }
 
     // ──────────────────────────────────────────────────────────────────────

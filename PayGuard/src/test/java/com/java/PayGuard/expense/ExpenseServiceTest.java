@@ -112,7 +112,7 @@ class ExpenseServiceTest {
         // Wallet should NOT be touched for CASH transactions
         verifyNoInteractions(walletRepository);
         verify(expenseRepository, times(1)).save(any(ExpenseEntry.class));
-        verify(eventPublisher, times(1)).publishEvent(any());
+        verify(eventPublisher, times(1)).publishEvent(any(Object.class));
     }
 
     // ──────────────────────────────────────────────────────────────────────

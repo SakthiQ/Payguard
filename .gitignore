@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Environment secrets
+.env
+
+# Local manual-testing scratch files (frontend)
+payguard-frontend/*cookies*.txt
+payguard-frontend/*_login.json
+payguard-frontend/login.json
+payguard-frontend/review_payload.json
+payguard-frontend/*.ps1
